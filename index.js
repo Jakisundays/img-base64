@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_1 = __importDefault(require("fastify"));
-// import { deleteFile, pdfToImage } from "./utils/utils";
+const utils_1 = require("./utils/utils");
 const { pipeline } = require("node:stream");
 const util = require("node:util");
 const pump = util.promisify(pipeline);
@@ -35,17 +35,19 @@ server.register(require("@fastify/multipart"), {
 server.get("/", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     return { hello: "Equity express" };
 }));
-// server.post("/api/base64", async (request: any, reply: any) => {
-//   try {
-//     const data = await request.file();
-//     await pump(data.file, fs.createWriteStream(data.filename));
-//     const base64Images = await pdfToImage(data.filename);
-//     await deleteFile(data.filename);
-//     reply.send({ base64Images });
-//   } catch (error) {
-//     console.error({ error });
-//   }
-// });
+server.post("/api/base64", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield request.file();
+        yield pump(data.file, fs.createWriteStream(data.filename));
+        console.log('we have the doc');
+        const base64Images = yield (0, utils_1.pdfToImage)(data.filename);
+        // await deleteFile(data.filename);
+        reply.send({ base64Images });
+    }
+    catch (error) {
+        console.error({ error });
+    }
+}));
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     yield server.after();
     // const port = process.env.PORT || 3000;

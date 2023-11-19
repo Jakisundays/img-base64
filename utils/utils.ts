@@ -4,19 +4,23 @@ const fs = require("node:fs");
 const { pdf } = require("pdf-to-img");
 
 export const pdfToImage = async (pdfPath: string) => {
-  const pages = await pdf(pdfPath);
-  let counter = 0;
-  let base64Images: string[] = [];
+  try {
+    const pages = await pdf(pdfPath);
+    let counter = 0;
+    let base64Images: string[] = [];
 
-  for await (const image of pages) {
-    const path = `./assets/${counter})-${pdfPath}.png`;
-    await fs.promises.writeFile(path, image);
-    const base64Image = imageToBase64(path);
-    base64Images.push(base64Image);
-    await deleteFile(path);
-    counter++;
+    for await (const image of pages) {
+      const path = `./assets/${counter})-${pdfPath}.png`;
+      await fs.promises.writeFile(path, image);
+      const base64Image = imageToBase64(path);
+      base64Images.push(base64Image);
+      await deleteFile(path);
+      counter++;
+    }
+    return base64Images;
+  } catch (error) {
+    console.error('error on function pdfToImage')
   }
-  return base64Images;
 };
 
 export async function deleteFile(filePath: string) {

@@ -1,5 +1,5 @@
 import fastify from "fastify";
-// import { deleteFile, pdfToImage } from "./utils/utils";
+import { pdfToImage } from "./utils/utils";
 
 const { pipeline } = require("node:stream");
 const util = require("node:util");
@@ -26,17 +26,18 @@ server.get("/", async (request, reply) => {
   return { hello: "Equity express" };
 });
 
-// server.post("/api/base64", async (request: any, reply: any) => {
-//   try {
-//     const data = await request.file();
-//     await pump(data.file, fs.createWriteStream(data.filename));
-//     const base64Images = await pdfToImage(data.filename);
-//     await deleteFile(data.filename);
-//     reply.send({ base64Images });
-//   } catch (error) {
-//     console.error({ error });
-//   }
-// });
+server.post("/api/base64", async (request: any, reply: any) => {
+  try {
+    const data = await request.file();
+    await pump(data.file, fs.createWriteStream(data.filename));
+    console.log('we have the doc');
+    const base64Images = await pdfToImage(data.filename);
+    // await deleteFile(data.filename);
+    reply.send({ base64Images });
+  } catch (error) {
+    console.error({ error });
+  }
+});
 
 const start = async () => {
   await server.after();

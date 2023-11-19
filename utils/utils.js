@@ -23,30 +23,35 @@ const fs = require("node:fs");
 const { pdf } = require("pdf-to-img");
 const pdfToImage = (pdfPath) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, e_1, _b, _c;
-    const pages = yield pdf(pdfPath);
-    let counter = 0;
-    let base64Images = [];
     try {
-        for (var _d = true, pages_1 = __asyncValues(pages), pages_1_1; pages_1_1 = yield pages_1.next(), _a = pages_1_1.done, !_a; _d = true) {
-            _c = pages_1_1.value;
-            _d = false;
-            const image = _c;
-            const path = `./assets/${counter})-${pdfPath}.png`;
-            yield fs.promises.writeFile(path, image);
-            const base64Image = imageToBase64(path);
-            base64Images.push(base64Image);
-            yield deleteFile(path);
-            counter++;
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
+        const pages = yield pdf(pdfPath);
+        let counter = 0;
+        let base64Images = [];
         try {
-            if (!_d && !_a && (_b = pages_1.return)) yield _b.call(pages_1);
+            for (var _d = true, pages_1 = __asyncValues(pages), pages_1_1; pages_1_1 = yield pages_1.next(), _a = pages_1_1.done, !_a; _d = true) {
+                _c = pages_1_1.value;
+                _d = false;
+                const image = _c;
+                const path = `./assets/${counter})-${pdfPath}.png`;
+                yield fs.promises.writeFile(path, image);
+                const base64Image = imageToBase64(path);
+                base64Images.push(base64Image);
+                yield deleteFile(path);
+                counter++;
+            }
         }
-        finally { if (e_1) throw e_1.error; }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (!_d && !_a && (_b = pages_1.return)) yield _b.call(pages_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return base64Images;
     }
-    return base64Images;
+    catch (error) {
+        console.error('error on function pdfToImage');
+    }
 });
 exports.pdfToImage = pdfToImage;
 function deleteFile(filePath) {
