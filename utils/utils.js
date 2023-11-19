@@ -16,10 +16,9 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pdfToImage = void 0;
+exports.deleteFile = exports.pdfToImage = void 0;
 const { pipeline } = require("node:stream");
 const util = require("node:util");
-const pump = util.promisify(pipeline);
 const fs = require("node:fs");
 const { pdf } = require("pdf-to-img");
 const pdfToImage = (pdfPath) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,6 +60,7 @@ function deleteFile(filePath) {
         }
     });
 }
+exports.deleteFile = deleteFile;
 function imageToBase64(imagePath) {
     // Read the image file as a buffer
     const imageBuffer = fs.readFileSync(imagePath);

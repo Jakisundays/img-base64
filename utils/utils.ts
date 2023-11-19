@@ -1,6 +1,5 @@
 const { pipeline } = require("node:stream");
 const util = require("node:util");
-const pump = util.promisify(pipeline);
 const fs = require("node:fs");
 const { pdf } = require("pdf-to-img");
 
