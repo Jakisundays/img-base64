@@ -27,6 +27,7 @@ server.get("/", async (request, reply) => {
     return { hello: "Equity express" };
 });
 server.post("/api/base64", async (request, reply) => {
+    console.log('base 64 route...');
     try {
         const data = await request.file();
         await pump(data.file, fs.createWriteStream(data.filename));

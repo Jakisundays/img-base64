@@ -27,6 +27,7 @@ server.get("/", async (request, reply) => {
 });
 
 server.post("/api/base64", async (request: any, reply: any) => {
+  console.log('base 64 route...')
   try {
     const data = await request.file();
     await pump(data.file, fs.createWriteStream(data.filename));
