@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -32,24 +23,24 @@ server.register(require("@fastify/multipart"), {
         parts: 1000, // For multipart forms, the max number of parts (fields + files)
     },
 });
-server.get("/", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
+server.get("/", async (request, reply) => {
     return { hello: "Equity express" };
-}));
-server.post("/api/base64", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
+});
+server.post("/api/base64", async (request, reply) => {
     try {
-        const data = yield request.file();
-        yield pump(data.file, fs.createWriteStream(data.filename));
+        const data = await request.file();
+        await pump(data.file, fs.createWriteStream(data.filename));
         console.log('we have the doc');
-        const base64Images = yield (0, utils_1.pdfToImage)(data.filename);
+        const base64Images = await (0, utils_1.pdfToImage)(data.filename);
         // await deleteFile(data.filename);
         reply.send({ base64Images });
     }
     catch (error) {
         console.error({ error });
     }
-}));
-const start = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield server.after();
+});
+const start = async () => {
+    await server.after();
     // const port = process.env.PORT || 3000;
     const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
     server.listen({ port: 8080, host }, (err, address) => {
@@ -60,5 +51,5 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         console.log(`Server listening on ${address}`);
     });
-});
+};
 start();

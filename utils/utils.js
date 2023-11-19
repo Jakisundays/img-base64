@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __asyncValues = (this && this.__asyncValues) || function (o) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var m = o[Symbol.asyncIterator], i;
@@ -21,29 +12,29 @@ const { pipeline } = require("node:stream");
 const util = require("node:util");
 const fs = require("node:fs");
 const { pdf } = require("pdf-to-img");
-const pdfToImage = (pdfPath) => __awaiter(void 0, void 0, void 0, function* () {
+const pdfToImage = async (pdfPath) => {
     var _a, e_1, _b, _c;
     try {
-        const pages = yield pdf(pdfPath);
+        const pages = await pdf(pdfPath);
         let counter = 0;
         let base64Images = [];
         try {
-            for (var _d = true, pages_1 = __asyncValues(pages), pages_1_1; pages_1_1 = yield pages_1.next(), _a = pages_1_1.done, !_a; _d = true) {
+            for (var _d = true, pages_1 = __asyncValues(pages), pages_1_1; pages_1_1 = await pages_1.next(), _a = pages_1_1.done, !_a; _d = true) {
                 _c = pages_1_1.value;
                 _d = false;
                 const image = _c;
                 const path = `./assets/${counter})-${pdfPath}.png`;
-                yield fs.promises.writeFile(path, image);
+                await fs.promises.writeFile(path, image);
                 const base64Image = imageToBase64(path);
                 base64Images.push(base64Image);
-                yield deleteFile(path);
+                await deleteFile(path);
                 counter++;
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (!_d && !_a && (_b = pages_1.return)) yield _b.call(pages_1);
+                if (!_d && !_a && (_b = pages_1.return)) await _b.call(pages_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
@@ -52,18 +43,16 @@ const pdfToImage = (pdfPath) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         console.error('error on function pdfToImage');
     }
-});
+};
 exports.pdfToImage = pdfToImage;
-function deleteFile(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield fs.promises.unlink(filePath);
-            console.log(`File ${filePath} deleted successfully`);
-        }
-        catch (error) {
-            console.error(`Error deleting file ${filePath}:`, error.message);
-        }
-    });
+async function deleteFile(filePath) {
+    try {
+        await fs.promises.unlink(filePath);
+        console.log(`File ${filePath} deleted successfully`);
+    }
+    catch (error) {
+        console.error(`Error deleting file ${filePath}:`, error.message);
+    }
 }
 exports.deleteFile = deleteFile;
 function imageToBase64(imagePath) {
